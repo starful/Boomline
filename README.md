@@ -1,12 +1,19 @@
 # Boomline
 
-1980년으로 돌아가 실제 역사 속 사건을 겪으며 회사를 세우고 키우는 경영 시뮬레이션. Steam 출시 예정(Windows, macOS).
+A business simulation game. Go back to 1980, live through real historical events, and grow a company from a one-room office into a conglomerate. Planned for Steam (Windows, macOS).
 
-## 문서
+## Documents
 
-- [PLAN.html](PLAN.html): 비즈니스 요건. 무엇을, 왜 만드는지. 두 문서가 어긋나면 이 문서가 기준이다.
-- [SPEC.md](SPEC.md): 개발 사양. 어떻게 만드는지.
+- [PLAN.html](PLAN.html): Business requirements. What we build and why. If the two documents disagree, this one wins.
+- [SPEC.md](SPEC.md): Development spec. How we build it.
 
-## 상태
+Both documents are written in Korean.
 
-기획 단계. 첫 마일스톤은 사무실 화면 1개, 월 진행, 뉴스 사건 1개가 돌아가는 프로토타입이다. 착수 전 결정할 기술 선택은 SPEC.md 13장에 있다.
+## Status
+
+Planning. The first milestone is a prototype with one office screen, monthly turns, and one news event. Technical choices still to be made are listed in SPEC.md section 13.
+
+## Repository rules
+
+- File and folder names are English only.
+- README is written in English.
