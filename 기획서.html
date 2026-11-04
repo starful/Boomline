@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boomline 기획서</title>
+<style>
+:root{
+  --bg:#f7f5f0; --card:#ffffff; --ink:#1f2328; --sub:#6a6f76; --line:#e3dfd6;
+  --accent:#2f6fd6; --accent-bg:#e7effc; --warn:#c2410c; --code:#f1eee7;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#16181c; --card:#1f2228; --ink:#e8e9eb; --sub:#9aa0a8; --line:#2f333a;
+    --accent:#6ea0f0; --accent-bg:#1e2a3d; --warn:#f08a5d; --code:#262a31; }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;
+  font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 64px}
+header h1{font-size:24px;line-height:1.35;margin:8px 0 6px}
+.meta{color:var(--sub);font-size:13px}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:20px 0}
+nav.toc b{font-size:13px;color:var(--sub)}
+nav.toc ol{margin:6px 0 0;padding-left:20px;font-size:14px}
+nav.toc a{color:var(--accent);text-decoration:none}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin:14px 0;scroll-margin-top:12px}
+h2{font-size:19px;margin:0 0 10px}
+p{margin:0 0 12px}
+.lead{font-weight:600}
+ul,ol{padding-left:20px;margin:0 0 12px}
+li{margin:4px 0}
+.kv{display:grid;gap:8px;margin:0 0 12px}
+.kv div{border-bottom:1px solid var(--line);padding-bottom:8px}
+.kv div:last-child{border-bottom:0}
+.kv dt{font-size:12px;color:var(--sub);margin:0}
+.kv dd{margin:0}
+.rows{display:grid;gap:10px;margin:0 0 12px}
+.row{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.row .t{font-weight:700;margin-bottom:4px}
+.row .l{font-size:12px;color:var(--sub);display:block;margin-top:6px}
+.steps{list-style:none;padding:0;margin:0 0 12px;counter-reset:s}
+.steps li{position:relative;border:1px solid var(--line);border-radius:10px;padding:10px 12px 10px 48px;margin:0 0 22px}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:12px;top:10px;width:26px;height:26px;border-radius:50%;
+  background:var(--line);color:var(--ink);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.steps li:not(:last-child)::after{content:"↓";position:absolute;left:50%;bottom:-21px;color:var(--sub);font-size:14px}
+.steps li.key{border:2px solid var(--accent);background:var(--accent-bg)}
+.steps li.key::before{background:var(--accent);color:#fff}
+.steps li.loop::after{content:"↺ 다음 달 · 1번으로";position:absolute;left:12px;bottom:-22px;font-size:12px;color:var(--sub)}
+.steps b{display:block}
+.steps span{font-size:14px;color:var(--sub)}
+.phase{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px}
+.phase h3{margin:0;font-size:16px}
+.phase .d{font-size:13px;color:var(--sub);margin-bottom:6px}
+.phase ul{margin:0}
+.gate{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 10px 6px;color:var(--sub)}
+.gate::before{content:"";width:12px;height:12px;transform:rotate(45deg);border:1.5px solid var(--sub);flex:none}
+.gate.final{color:var(--ink);font-weight:700}
+.gate.final::before{background:var(--accent);border-color:var(--accent)}
+pre{background:var(--code);border-radius:10px;padding:12px;overflow-x:auto;font-size:12.5px;line-height:1.5;margin:0 0 12px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.note{font-size:13px;color:var(--sub)}
+.checks{list-style:none;padding:0}
+.checks li::before{content:"☐ ";color:var(--sub)}
+.tl{list-style:none;padding:0;margin:0 0 12px 6px;border-left:2px solid var(--line)}
+.tl li{position:relative;padding:0 0 14px 18px;margin:0}
+.tl li::before{content:"";position:absolute;left:-8px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--sub)}
+.tl li.boom::before{background:var(--accent);border-color:var(--accent)}
+.tl li.crisis::before{background:var(--warn);border-color:var(--warn)}
+.tl .d{display:block;font-size:12px;font-weight:700;color:var(--sub)}
+.tl .e{display:block;font-weight:600}
+.tl .g{display:block;font-size:14px;color:var(--sub)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--sub);margin:0 0 12px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:2px solid var(--sub);background:var(--card)}
+.legend .b::before{background:var(--accent);border-color:var(--accent)}
+.legend .c::before{background:var(--warn);border-color:var(--warn)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;margin:0 0 12px}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.tbl th{font-size:12px;color:var(--sub);font-weight:600}
+.tbl td:first-child{font-weight:600;white-space:nowrap}
+h3.sub{font-size:16px;margin:18px 0 8px}
+a{color:var(--accent)}
+footer{color:var(--sub);font-size:12px;text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="meta">기획서 · 2026-11-04 최종 업데이트</div>
+  <h1>Boomline 기획서</h1>
+  <div class="meta">비즈니스 요건 · 1980~2030 · 한국편 우선 · Steam</div>
+</header>
+
+<nav class="toc"><b>목차</b>
+<ol>
+<li><a href="#s1">게임 개요</a></li>
+<li><a href="#s2">핵심 디자인 원칙</a></li>
+<li><a href="#s3">게임 루프</a></li>
+<li><a href="#ui">화면 구성</a></li>
+<li><a href="#s4">핵심 시스템</a></li>
+<li><a href="#detail">게임 규칙</a></li>
+<li><a href="#mode">난이도·튜토리얼·엔딩</a></li>
+<li><a href="#s5">국가와 시대 구성</a></li>
+<li><a href="#timeline">한국편 사건 연표 (데모)</a></li>
+<li><a href="#s6">아트와 연출 방향</a></li>
+<li><a href="#s9">출시와 홍보 전략</a></li>
+<li><a href="#s10">3개월 로드맵</a></li>
+<li><a href="#s11">리스크와 미결정 사항</a></li>
+<li><a href="#docs">문서 구성</a></li>
+</ol></nav>
+
+<section id="s1">
+<h2>1. 게임 개요</h2>
+<p class="lead">1980년으로 돌아가 실제 역사 속 사건을 겪으며 회사를 세우고 키우는 경영 시뮬레이션이다. 역사가 곧 공략집이고, 플레이어는 다가올 사건에 대비하는 전략으로 승부한다.</p>
+<dl class="kv">
+<div><dt>제목</dt><dd>Boomline (boom + timeline). 한국어·일본어 부제는 미정</dd></div>
+<div><dt>장르</dt><dd>경영 시뮬레이션 / 타이쿤 (턴제, 월 단위)</dd></div>
+<div><dt>플랫폼</dt><dd>Steam (Windows, macOS), 웹 기술 기반 데스크톱 앱</dd></div>
+<div><dt>배경</dt><dd>1980~2030년. 출시 시점까지는 실제 사건, 이후는 시나리오</dd></div>
+<div><dt>국가</dt><dd>한국으로 시작, 일본·미국은 업데이트 또는 DLC</dd></div>
+<div><dt>언어</dt><dd>한국어, 영어, 일본어</dd></div>
+<div><dt>타깃</dt><dd>경영·전략 시뮬 팬, 근현대 경제사에 관심 있는 글로벌 플레이어</dd></div>
+<div><dt>개발</dt><dd>1인 개발, AI 활용 (코드·그래픽·데이터)</dd></div>
+</dl>
+<p><b>레퍼런스와 차별점</b>: STONKS-9800이 시대 분위기 속 주식 매매라면, 이 게임은 회사를 직접 운영하고 키우는 타이쿤이다. Game Dev Tycoon의 사무실 성장 재미에 실제 경제사의 굴곡을 얹는다.</p>
+</section>
+
+<section id="s2">
+<h2>2. 핵심 디자인 원칙</h2>
+<p class="lead">역사를 아는 것만으로는 이길 수 없어야 한다. 플레이어는 IMF가 온다는 걸 알지만, 버텨내는 건 실력이어야 한다.</p>
+<ol>
+<li><b>시점과 강도는 흔들린다</b>: 위기 징후 뉴스는 실제 순서대로 나오지만, 터지는 달과 충격 크기는 일정 범위에서 랜덤.</li>
+<li><b>대비에는 비용이 든다</b>: 현금을 쌓으면 성장 기회를 놓치고, 부채로 확장하면 위기에 취약해진다.</li>
+<li><b>큰 회사는 느리다</b>: 공장, 직원, 장기 계약 때문에 알면서도 방향을 즉시 바꿀 수 없다.</li>
+<li><b>역사에 없는 변수</b>: 경쟁사 AI, 노사 문제, 규제 조사, 내부 사고가 섞인다.</li>
+<li><b>숫자가 아니라 사람이 보인다</b>: 경영 상황이 사무실 풍경과 직원 행동으로 드러난다.</li>
+</ol>
+</section>
+
+<section id="s3">
+<h2>3. 게임 루프</h2>
+<p class="lead">매달 뉴스를 읽고 결정하면, 결과가 사무실에 드러난다.</p>
+<ol class="steps">
+<li><b>월 시작</b><span>날짜와 경제 지표 갱신</span></li>
+<li><b>뉴스와 징후</b><span>신문 헤드라인, 위기 경고</span></li>
+<li class="key"><b>경영 결정</b><span>투자, 자금 조달, 인사</span></li>
+<li><b>한 달 진행</b><span>매출 계산, 사건 발생</span></li>
+<li class="loop"><b>결과 반영</b><span>재무, 사무실, 직원 반응</span></li>
+</ol>
+<p style="margin-top:30px">한 턴은 한 달이다. 플레이어가 개입하는 건 3단계 결정뿐이고, 나머지는 그 결정의 근거와 결과를 보여준다. 위기 땐 턴 중간에 긴급 결정 이벤트가 끼어든다.</p>
+</section>
+
+<section id="ui">
+<h2>4. 화면 구성</h2>
+<p class="lead">메인 화면은 사무실이고, 다른 화면은 그 위에 패널로 열린다. 한 패널에서는 한 종류의 결정만 한다.</p>
+<div class="rows">
+<div class="row"><div class="t">메인 (사무실)</div>탑뷰 사무실이 화면 대부분을 차지한다. 상단 바에 날짜, 현금, 기업가치, 지표 4개(기준금리, 환율, 유가, 소비심리)를 둔다. 하단에 "다음 달" 버튼.<span class="l">직원을 누르면 능력·사기·연봉과 지금 하는 일이 보인다.</span></div>
+<div class="row"><div class="t">신문</div>매달 초 자동으로 펼쳐진다. 1면 헤드라인 1개, 단신 2~3개, 경제면 지표.<span class="l">위기 징후는 1면이 아니라 단신에 섞여 나온다. 신문을 읽는 습관이 실력이 된다.</span></div>
+<div class="row"><div class="t">경영 결정</div>탭 4개: 사업, 자금, 인사, 사무실. 결정 카드마다 비용, 예상 효과, 효과가 나타나기까지 걸리는 기간을 보여준다.<span class="l">한 달에 쓸 수 있는 결정 횟수에 제한을 둘지는 플레이테스트로 정한다.</span></div>
+<div class="row"><div class="t">재무</div>손익, 현금 흐름, 부채비율을 최근 12개월 그래프로 보여준다.<span class="l">위기 전에 부채비율을 확인하게 만드는 화면이다.</span></div>
+<div class="row"><div class="t">시장</div>업종별 성장률과 수익률, 경쟁사 순위.<span class="l">다음에 어느 업종으로 갈아탈지 판단하는 화면이다.</span></div>
+<div class="row"><div class="t">긴급 이벤트</div>위기나 기회가 터지면 턴 중간에 뜨는 창. 선택지 2~3개, 시간 제한은 없다.</div>
+<div class="row"><div class="t">연말 결산</div>12월이 끝나면 1년 요약, 재계 순위 변화, 이번 해 획득한 업적을 보여준다.</div>
+</div>
+<p><b>조작 원칙</b>: 마우스만으로 끝까지 플레이할 수 있다. 시대별로 UI 분위기가 바뀌어도 버튼 위치는 그대로라서 플레이어가 헤매지 않는다. 해상도와 단축키 등 기술 요건은 SPEC.md에 둔다.</p>
+</section>
+
+<section id="s4">
+<h2>5. 핵심 시스템</h2>
+<p class="lead">데모 범위는 업종 4~5개, 자금 3종, 직원·사무실, 사건, 경쟁사 AI다.</p>
+<div class="rows">
+<div class="row"><div class="t">업종</div>제조, 유통, 건설, 무역, IT(1990년대 해금)<span class="l">이후 확장: 금융, 엔터, 바이오, 플랫폼</span></div>
+<div class="row"><div class="t">자금</div>은행 대출, 사채, 증자·상장<span class="l">이후 확장: 채권, 해외 차입, M&amp;A</span></div>
+<div class="row"><div class="t">직원</div>채용·해고, 사기, 연봉, 야근<span class="l">이후 확장: 노조, 핵심 인재, 임원</span></div>
+<div class="row"><div class="t">사무실</div>단칸방에서 층 추가, 시대별 가구<span class="l">이후 확장: 자사 빌딩, 지사, 공장 화면</span></div>
+<div class="row"><div class="t">사건</div>거시 사건 + 업종별 영향 + 랜덤 변수<span class="l">이후 확장: 국가 간 연쇄 영향</span></div>
+<div class="row"><div class="t">경쟁사</div>업종별 AI 기업 2~3개<span class="l">이후 확장: 인수합병, 재계 순위</span></div>
+</div>
+<p><b>업종은 시대에 따라 열리고 저문다.</b> 1980년대엔 IT가 없고, 2000년대 이후 건설 수익률은 떨어진다. 언제 업종을 갈아타는지가 핵심 전략이다.</p>
+<p><b>승리 조건</b>: 생존을 기본으로 기업 가치, 재계 순위, 위기 극복 업적으로 평가한다. 파산하면 게임 오버.</p>
+</section>
+
+<section id="detail">
+<h2>6. 게임 규칙</h2>
+<p class="lead">데모는 1980년 1월부터 1999년 12월까지 240턴이다. 목표 플레이 시간은 3~4시간, 턴당 1분 안팎이다. 구체적인 계산식과 수치는 SPEC.md에서 정의한다.</p>
+
+<h3 class="sub">경제 지표</h3>
+<p>지표는 기준금리, 원/달러 환율, 유가, 소비심리, 주가지수 5개다. 큰 흐름은 실제 역사를 따르고, 사건이 터지면 일시적으로 크게 흔들린다. 플레이어는 지표를 보고 업종과 자금 전략을 판단한다.</p>
+
+<h3 class="sub">업종별 특성</h3>
+<div class="rows">
+<div class="row"><div class="t">제조 (수출)</div>잘 될 때: 원화 약세, 저유가<span class="l">타격: 원화 강세, 고유가 · 설비 투자가 크고 회수가 느리다</span></div>
+<div class="row"><div class="t">유통</div>잘 될 때: 소비심리 상승<span class="l">타격: 소비 위축 · 회전이 빠르고 마진이 낮다</span></div>
+<div class="row"><div class="t">건설</div>잘 될 때: 저금리, 부동산 붐, 대형 행사<span class="l">타격: 고금리, 미분양 · 수주 단위로 움직이고 부채 의존이 크다</span></div>
+<div class="row"><div class="t">무역</div>잘 될 때: 환율 방향을 맞혔을 때<span class="l">타격: 환율 급변 · 적은 인원으로 큰 매출, 위험도 크다</span></div>
+<div class="row"><div class="t">IT (1994년 해금)</div>잘 될 때: 기술 전환기, 벤처 붐<span class="l">타격: 버블 붕괴 · 성장이 빠르고 인재가 핵심이다</span></div>
+</div>
+<p>매출은 회사 규모, 업종, 경기, 직원 생산성, 경쟁 상황으로 정해진다. 같은 경기라도 업종에 따라 결과가 정반대가 될 수 있어야 한다.</p>
+
+<h3 class="sub">자금과 파산</h3>
+<ul>
+<li><b>은행 대출</b>: 기준금리에 가산금리를 더한다. 한도는 신용등급과 부채비율로 정해진다.</li>
+<li><b>사채</b>: 즉시 빌릴 수 있지만 금리가 높고, 위기 때 상환을 독촉한다. 1993년 금융실명제 이후 구하기 어려워진다.</li>
+<li><b>증자·상장</b>: 기업가치 조건을 넘으면 열린다. 큰 돈이 들어오는 대신 지분이 줄어든다.</li>
+<li><b>위기 때 대출 회수</b>: 위기가 오면 은행은 부채비율이 높은 회사부터 만기 연장을 거절한다. IMF 구간의 핵심 장치다.</li>
+<li><b>파산 조건</b>: 현금이 마이너스인 달이 3개월 이어지거나, 만기 상환에 실패하면 파산한다.</li>
+</ul>
+
+<h3 class="sub">직원과 사무실</h3>
+<ul>
+<li>직원은 능력, 사기, 연봉 세 값을 가진다. 사기가 낮으면 생산성이 떨어지고 이직한다.</li>
+<li>야근은 그 달 생산성을 올리지만 사기를 깎는다. 계속 쓰면 이직이 늘어난다.</li>
+<li>1987년 하반기부터 임금 상승 압력과 노사 이벤트가 생긴다.</li>
+<li>사무실 면적이 직원 수 한도다. 이사는 비용이 들고 한 달간 생산성이 떨어진다.</li>
+<li>시대별로 열리는 가구와 기기(팩스, PC 등)가 생산성이나 사기를 올린다.</li>
+</ul>
+
+<h3 class="sub">경쟁사와 정보</h3>
+<ul>
+<li>경쟁사는 업종별 2~3개이고 성향이 다르다: 공격 확장형, 안정형, 모방형. 공격 확장형은 호황에 빨리 크고 위기에 먼저 무너진다. 플레이어가 반면교사로 삼는 대상이다.</li>
+<li>위기 징후는 신문 단신, 거래 은행 담당자의 한마디, 돈을 내고 사는 경제연구소 보고서로 들어온다. 정보에도 비용이 든다.</li>
+</ul>
+</section>
+
+<section id="mode">
+<h2>7. 난이도·튜토리얼·엔딩</h2>
+<p class="lead">난이도는 역사를 얼마나 믿을 수 있는지로 조절한다. 어려울수록 사건 시점이 더 흔들리고 징후는 적게 보인다.</p>
+
+<h3 class="sub">시작 조건</h3>
+<p>플레이어는 난이도, 첫 업종, 창업자 배경을 고른다. 창업자 배경은 엔지니어(생산성 보너스), 영업(매출 보너스), 금융(대출 금리 우대) 중 하나다.</p>
+
+<h3 class="sub">난이도</h3>
+<table class="tbl">
+<tr><th></th><th>쉬움</th><th>보통</th><th>어려움</th></tr>
+<tr><td>시작 자금</td><td>많음</td><td>보통</td><td>적음</td></tr>
+<tr><td>사건 시점</td><td>정확</td><td>±2개월</td><td>±4개월</td></tr>
+<tr><td>위기 강도</td><td>약함</td><td>보통</td><td>강함</td></tr>
+<tr><td>위기 징후</td><td>많음</td><td>보통</td><td>적음</td></tr>
+<tr><td>경쟁사</td><td>소극적</td><td>보통</td><td>공격적</td></tr>
+</table>
+
+<h3 class="sub">튜토리얼</h3>
+<p>1980년 1~6월이 튜토리얼 구간이다. 한 달에 기능 하나씩 배운다. 경험자는 건너뛸 수 있다.</p>
+<ol>
+<li>1월: 사무실 열기, 첫 직원 채용</li>
+<li>2월: 신문 읽기, 지표 보는 법</li>
+<li>3월: 첫 사업 결정</li>
+<li>4월: 은행 대출</li>
+<li>5월: 재무 화면 읽기</li>
+<li>6월: 작은 사건 하나 겪어 보기</li>
+</ol>
+<p>튜토리얼 뒤에는 처음 겪는 상황마다 한 번씩만 팁이 뜬다. 예: 첫 위기 징후, 첫 부채비율 경고.</p>
+
+<h3 class="sub">엔딩</h3>
+<div class="rows">
+<div class="row"><div class="t">파산</div>게임 오버. 언제 어떤 결정이 원인이었는지 짚어주는 리포트를 보여준다.<span class="l">실패에서 배우는 게 이 게임의 학습 포인트다.</span></div>
+<div class="row"><div class="t">생존</div>1999년 12월까지 버텼다.</div>
+<div class="row"><div class="t">성장</div>재계 순위 100위 안에 들었다.</div>
+<div class="row"><div class="t">재벌</div>재계 순위 10위 안에 들었다.</div>
+</div>
+<p><b>점수</b>: 기업가치에 위기 극복 보너스를 더한다. 같은 기업가치라도 IMF를 무차입으로 넘긴 쪽이 높다.</p>
+
+<h3 class="sub">업적 예시 (Steam 업적)</h3>
+<ul>
+<li>IMF를 부채 없이 통과</li>
+<li>3저 호황 동안 수출 매출 10배</li>
+<li>금융실명제 시행 때 사채 0원</li>
+<li>올림픽 특수로 건설 수주 달성</li>
+<li>외환위기 직후 경쟁사 인수</li>
+<li>한 번도 감원하지 않고 1999년 도달</li>
+</ul>
+<p><b>다시 할 이유</b>: 다른 업종과 창업자 배경, 어려움 난이도, 이후 추가될 일본·미국편.</p>
+</section>
+
+<section id="s5">
+<h2>8. 국가와 시대 구성</h2>
+<p class="lead">한국편 1980~2030년이 본편이고, 데모는 1980~1999년이다. 아래 사건 목록은 기억 기반 초안이며 데이터 입력 전 출처 검증을 거친다.</p>
+<div class="rows">
+<div class="row"><div class="t">1980년대</div>오일쇼크 여파, 3저 호황, 서울 올림픽<span class="l">수출 제조업 황금기, 건설 붐</span></div>
+<div class="row"><div class="t">1990년대</div>금융실명제, 외환위기(IMF)<span class="l">데모의 클라이맥스. 부채 경영의 심판</span></div>
+<div class="row"><div class="t">2000년대</div>닷컴 붕괴, 카드대란, 글로벌 금융위기<span class="l">IT 해금과 버블, 금융 리스크</span></div>
+<div class="row"><div class="t">2010년대~현재</div>스마트폰 전환, 코로나, 금리 급등<span class="l">플랫폼·비대면으로의 산업 전환</span></div>
+<div class="row"><div class="t">출시 이후~2030</div>시나리오 사건 (AI 확산, 인구 감소, 기후 규제 등)<span class="l">답을 모르는 엔드게임 구간</span></div>
+</div>
+<p><b>미래 구간 운영</b>: 출시 후 실제로 일어난 사건은 매년 업데이트로 실제 데이터로 교체한다. 게임이 현실과 함께 자란다는 점을 홍보 포인트로 쓴다.</p>
+<p><b>국가 확장</b>: 일본, 미국은 같은 세계 사건을 다르게 겪는 구조로 만든다. 예를 들어 플라자 합의는 일본엔 엔고와 버블의 시작, 한국엔 3저 호황의 일부로 작용한다.</p>
+</section>
+
+<section id="timeline">
+<h2>9. 한국편 사건 연표 (데모)</h2>
+<p class="lead">데모 구간 1980~1999년의 주요 사건과 게임 효과 초안이다. 기억 기반으로 정리했으며, 데이터 입력 전에 날짜와 수치를 출처로 검증한다.</p>
+<div class="legend"><span class="b">기회·호황</span><span class="c">위기·충격</span><span>제도·환경 변화</span></div>
+<ul class="tl">
+<li class="crisis"><span class="d">1980</span><span class="e">2차 오일쇼크 여파, 마이너스 성장</span><span class="g">유가·금리가 높은 불황에서 출발한다</span></li>
+<li class="boom"><span class="d">1980.12</span><span class="e">컬러 TV 방송 시작</span><span class="g">가전·광고 수요 증가 (제조·유통 기회)</span></li>
+<li class="boom"><span class="d">1982.1</span><span class="e">야간 통행금지 해제</span><span class="g">유통·서비스 소비 증가</span></li>
+<li><span class="d">1985.9</span><span class="e">플라자 합의</span><span class="g">엔고로 한국 수출품 경쟁력 상승. 3저 호황의 징후</span></li>
+<li class="boom"><span class="d">1986~1988</span><span class="e">3저 호황 (저유가·저금리·저달러)</span><span class="g">수출 제조업과 무역의 황금기</span></li>
+<li class="boom"><span class="d">1986.9</span><span class="e">서울 아시안게임</span><span class="g">건설·유통 수요 증가</span></li>
+<li><span class="d">1987 하반기</span><span class="e">노사분규 급증, 임금 상승</span><span class="g">인건비 상승, 노사 이벤트 시작</span></li>
+<li class="boom"><span class="d">1988.9</span><span class="e">서울 올림픽</span><span class="g">건설·관광·가전 수요 정점</span></li>
+<li class="boom"><span class="d">1989</span><span class="e">주가지수 1,000 돌파, 신도시 건설 발표</span><span class="g">증시 과열과 건설 붐. 상장 기회</span></li>
+<li><span class="d">1990~1992</span><span class="e">3저 종료, 주택 대량 공급</span><span class="g">수출 둔화, 건설 과열 뒤 조정</span></li>
+<li><span class="d">1993.8</span><span class="e">금융실명제 시행</span><span class="g">사채 시장 위축, 사채 금리 급등</span></li>
+<li class="boom"><span class="d">1994</span><span class="e">상용 인터넷 서비스 시작</span><span class="g">IT 업종 해금</span></li>
+<li><span class="d">1996.12</span><span class="e">OECD 가입</span><span class="g">자본시장 개방, 해외 차입이 쉬워진다 (단기 외채 위험)</span></li>
+<li class="crisis"><span class="d">1997 상반기</span><span class="e">대기업 연쇄 부도</span><span class="g">위기 징후: 은행 대출 심사 강화</span></li>
+<li class="crisis"><span class="d">1997.7</span><span class="e">동남아 통화 위기</span><span class="g">위기 징후: 환율 불안</span></li>
+<li class="crisis"><span class="d">1997.11~12</span><span class="e">외환위기, IMF 구제금융</span><span class="g">환율·금리 급등, 대출 회수, 부도 속출. 데모의 클라이맥스</span></li>
+<li class="boom"><span class="d">1998</span><span class="e">구조조정, 금 모으기 운동</span><span class="g">자산이 헐값에 나온다. 현금을 쥔 회사에 인수 기회</span></li>
+<li class="boom"><span class="d">1999</span><span class="e">벤처·코스닥 붐, 인터넷 확산</span><span class="g">IT 업종 급성장. 다음 버블의 시작</span></li>
+</ul>
+<p class="note">정치적 사건은 다루지 않거나 경제적 영향만 중립적으로 반영한다. 실존 기업 이름은 게임에서 가상 이름으로 바꾼다.</p>
+</section>
+
+<section id="s6">
+<h2>10. 아트와 연출 방향</h2>
+<p class="lead">그래픽은 유료 에셋 구매 없이 전부 AI로 만든다. 탑뷰 플랫 벡터 사무실(기존 샘플 이미지)을 기준으로 SVG 컴포넌트 라이브러리를 쌓는다.</p>
+<ul>
+<li><b>스타일 가이드 먼저</b>: 샘플 이미지에서 팔레트, 선 굵기, 그림자, 모서리, 캐릭터 머리:몸 비율을 뽑아 문서로 고정하고, 모든 생성 요청에 함께 넘긴다.</li>
+<li><b>컴포넌트 단위 생성</b>: 가구, 소품, 바닥·벽 타일, 캐릭터 파츠(얼굴, 머리, 복장)를 각각 SVG로 만들고 화면은 조합으로 구성한다.</li>
+<li><b>시대별 소품</b>: 80년대 타자기·다이얼 전화·재떨이, 90년대 브라운관 PC·삐삐·팩스, 2000년대 이후 LCD·흡연실 분리.</li>
+<li><b>시대별 UI 테마</b>: 80년대 CRT 단말기풍, 90년대 윈도우 95풍, 2000년대 포털풍으로 UI 자체가 바뀐다.</li>
+<li><b>손맛 연출</b>: 숫자 카운트업, 위기 시 화면 흔들림·붉은 톤, 신문 호외 연출, 시간대 조명(야근 불빛).</li>
+<li><b>직원 말풍선</b>: 호황엔 회식, 위기엔 야근과 한숨, 감원 시 빈 책상.</li>
+<li><b>캡슐 이미지</b>: 판매에 가장 큰 영향. 출시 직전 품질을 보고 AI 유지 여부를 결정한다.</li>
+</ul>
+</section>
+
+<section id="s9">
+<h2>11. 출시와 홍보 전략</h2>
+<p class="lead">3개월 목표는 정식 출시가 아니라 데모 공개와 스팀 위시리스트 확보다. 정식 출시는 위시리스트 반응을 보고 결정한다.</p>
+<ul>
+<li><b>스팀 페이지 조기 오픈</b>: 앱 등록비(앱당 100달러)와 심사 기간을 고려해 3개월차 초반에 준비를 시작한다.</li>
+<li><b>데모</b>: 한국편 1980~1999년. 3저 호황부터 IMF까지 한 판에 담긴다.</li>
+<li><b>Steam Next Fest</b>: 데모로 참가를 노린다. 신청 마감이 행사보다 앞서므로 일정을 미리 확인한다.</li>
+<li><b>AI 공개</b>: AI로 만든 그래픽 등 플레이어가 보는 콘텐츠는 스팀 AI 공개 대상이고, 코드 어시스턴트 사용은 대상이 아니다 (<a href="https://www.notebookcheck.net/Steam-updates-AI-disclosure-form-requiring-developers-to-report-visible-and-in-game-AI-but-not-background-tools.1206103.0.html">출처</a>).</li>
+<li><b>홍보 포인트</b>: 실제 역사, 시대별로 변하는 UI, 현실과 함께 업데이트되는 미래 구간.</li>
+<li><b>가격 모델</b>: 본편 유료, 일본편·미국편은 DLC 또는 무료 업데이트 중 결정 필요.</li>
+</ul>
+</section>
+
+<section id="s10">
+<h2>12. 3개월 로드맵</h2>
+<p class="lead">3개월 뒤 한국편 데모와 스팀 페이지를 공개한다.</p>
+<div class="phase"><h3>1개월차 · 뼈대</h3><div class="d">2026년 11월</div>
+<ul><li>스타일 가이드 확정</li><li>사무실 화면과 컴포넌트</li><li>월 진행 핵심 루프</li><li>데이터 스키마 설계</li><li>1980년대 사건 입력</li></ul></div>
+<div class="gate">관문: 재미 검증</div>
+<div class="phase"><h3>2개월차 · 시스템</h3><div class="d">2026년 12월</div>
+<ul><li>업종과 자금 시스템</li><li>직원과 사무실 확장</li><li>1990~2010년대 사건</li><li>세이브와 로드</li><li>데스크톱 패키징</li></ul></div>
+<div class="gate">관문: 첫 플레이테스트</div>
+<div class="phase"><h3>3개월차 · 출시 준비</h3><div class="d">2027년 1월</div>
+<ul><li>2010년대~현재 사건</li><li>밸런싱과 튜토리얼</li><li>연출과 효과음</li><li>한·영·일 현지화</li><li>스팀 페이지와 트레일러</li></ul></div>
+<div class="gate final">관문: 데모와 스팀 페이지 공개</div>
+<p>가장 중요한 관문은 1개월차 말 재미 검증이다. 여기서 핵심 루프가 재미없으면 콘텐츠를 늘리기 전에 구조부터 바꾼다. 1인 개발과 클로드 사용량 절반 기준이라, 일정이 밀리면 3개월차의 2010년대 이후 사건부터 뒤로 미룬다.</p>
+</section>
+
+<section id="s11">
+<h2>13. 리스크와 미결정 사항</h2>
+<p class="lead">가장 큰 리스크는 콘텐츠 양과 역사 정확성이다. 데모 범위를 좁게 유지하는 게 1차 대응이다.</p>
+<div class="rows">
+<div class="row"><div class="t">50년 × 3개국 콘텐츠 과다</div>데모는 한국 20년, 나머지는 출시 후 확장</div>
+<div class="row"><div class="t">AI 사건 데이터 오류</div>출처 없는 사건은 입력 금지, 검증 단계 필수</div>
+<div class="row"><div class="t">AI 그래픽 스타일 불일치</div>스타일 가이드와 컴포넌트 라이브러리</div>
+<div class="row"><div class="t">AI 그래픽 저작권 보호 약함</div>게임 전체(코드, 시스템, 텍스트)로 차별화</div>
+<div class="row"><div class="t">1인 개발, 클로드 사용량 절반</div>기획·스타일·스키마 문서를 매 세션 기준으로 재사용</div>
+<div class="row"><div class="t">재미 검증 실패</div>1개월차 말 플레이 판단, 구조 변경은 이때</div>
+</div>
+<p><b>미결정 사항</b> (기술 선택은 SPEC.md)</p>
+<ul class="checks">
+<li>한국어·일본어 부제 (후보: 회귀 사장님 / やり直し社長)</li><li>공식 도메인 구입 여부</li><li>일본·미국편 DLC 유료 여부</li><li>본편 가격대</li><li>Next Fest 목표 회차</li>
+</ul>
+</section>
+
+<section id="docs">
+<h2>14. 문서 구성</h2>
+<p class="lead">이 기획서는 무엇을, 왜 만드는지(비즈니스 요건)를 정의한다. 어떻게 만드는지(개발 사양)는 같은 폴더의 SPEC.md가 정의한다.</p>
+<dl class="kv">
+<div><dt>기획서.html</dt><dd>게임 컨셉, 디자인 원칙, 화면과 게임 규칙, 시대와 사건, 아트 방향, 출시 전략, 로드맵, 리스크</dd></div>
+<div><dt>SPEC.md</dt><dd>기술 스택, 프로젝트 구조, 데이터 모델, 계산식, 세이브, 현지화, 스팀 연동, 테스트, 개발 규칙</dd></div>
+</dl>
+<p><b>문서 관리</b>: 원본은 로컬 프로젝트 폴더 /opt/work/boomline에 둔다. 방향이 바뀌면 기획서를 먼저 고치고, 그에 맞춰 SPEC.md를 고친다. 두 문서가 어긋나면 기획서가 기준이다.</p>
+</section>
+
+<footer>Boomline 기획서 · 2026-11-04 · 개발 사양은 SPEC.md</footer>
+</div>
+</body>
+</html>

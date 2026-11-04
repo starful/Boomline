@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+out/
+release/
+src-tauri/target/
+
+# local saves and logs
+saves/
+*.log
+
+# environment and secrets
+.env
+.env.*
+!.env.example
+
+# Steam SDK binaries (install locally, do not commit)
+steamworks_sdk/
+*.dll
+*.dylib
+*.so
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
